@@ -171,6 +171,7 @@ private:
 
 
 /*
+
 #include <Windows.h>
 #include <winsock.h>
 
@@ -209,7 +210,7 @@ std::deque<SocketBuffer>	recvbufferlist;
 // Read packet for parse
 bool	recvpacket(SocketBuffer *buffer)
 {
-	if( !recvbufferlist.empty() )
+	if (!recvbufferlist.empty())
 	{
 		buffer->totalsize = recvbufferlist[0].totalsize;
 		buffer->currentsize = recvbufferlist[0].currentsize;
@@ -240,7 +241,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	server.sin_port = htons(SERVER_PORT);
 
 	int err = ::connect(sock, (struct sockaddr *)&server, sizeof(server));
-	if ( err < 0)
+	if (err < 0)
 		return -1;
 
 
@@ -259,11 +260,20 @@ int _tmain(int argc, _TCHAR* argv[])
 		int psize = (int&)*in;
 		//int psize;
 		//memcpy(&psize, in, sizeof(int));
-		printf("len %d : %s\n", psize, in+sizeof(int));
+		printf("len %d : %s\n", psize, in + sizeof(int));
+
+
+		char out[SOCKET_BUFFER] = { 0, };
+		int sendlen = 2;
+		memcpy(out, &sendlen, sizeof(int));
+		out[4] = 'o';
+		out[5] = 'k';
+		int sendsize = ::send(sock, out, sendlen + sizeof(int), 0);
+
+		printf("send len %d : %s\n", sendlen, out + sizeof(int));
 	}
-	
+
 	return 0;
 }
-
 
 */

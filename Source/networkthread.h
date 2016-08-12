@@ -1,5 +1,6 @@
 #include <Windows.h>
 #include <winsock.h>
+#include "logger.h"
 
 #define PORT 8888
 #define SOCKET_BUFFER 1024
@@ -25,13 +26,11 @@ public:
     {
 		WSADATA wsaData;
 		if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
-		{
-			Logger::outputDebugString("error\r\n");
-		}
+			Log::getInstance()->log("error\r\n");
 
 		serversock = socket(AF_INET, SOCK_STREAM, 0);
 		if (serversock == INVALID_SOCKET)
-			Logger::outputDebugString("ERROR opening socket");
+			Log::getInstance()->log("ERROR opening socket");
 
 		ZeroMemory(&serv_addr, sizeof(struct sockaddr_in));
 		serv_addr.sin_family = AF_INET;
@@ -40,10 +39,10 @@ public:
 
 		int status = bind(serversock, (struct sockaddr*)&serv_addr, sizeof(struct sockaddr_in));
 		if (status == SOCKET_ERROR)
-			Logger::outputDebugString("Bind Error\n");
+			Log::getInstance()->log("Bind Error\n");
 
 		listen(serversock, 5);
-		Logger::outputDebugString("Socket created!");
+		Log::getInstance()->log("Socket created!");
 
 		clisock = -1;
     }
@@ -61,7 +60,7 @@ public:
 			clisock = accept(serversock, (struct sockaddr*)&cli_addr, &sockLen);
 			if (clisock == INVALID_SOCKET)
 			{
-				Logger::outputDebugString("Accept Error\n");
+				Log::getInstance()->log("Accept Error");
 				closesocket(serversock);
 				//WSACleanup();
 				return;
@@ -70,6 +69,7 @@ public:
 			// client socket --> nonblock
 			unsigned long arg = 1;
 			if (ioctlsocket(clisock, FIONBIO, &arg) != 0) return;
+			Log::getInstance()->log("new Client !!");
 		}
 		else
 		{
@@ -98,14 +98,16 @@ public:
 				{
 					SocketBuffer recvbuf;
 					recvbuf.totalsize = readn;
-					recvbuf.totalsize = readn;
-					readn = 0;
+					int psize = (int&)*buffer;
+					memcpy(recvbuf.buffer, buffer + sizeof(int), psize);
+					parse(&recvbuf);
 				}
 				else
 				{
 					// disconnected
 					closesocket(clisock);
 					clisock = -1;
+					Log::getInstance()->log("Client disconnected!!");
 				}
 			}
 
@@ -147,6 +149,11 @@ public:
 
 
 		return true;
+	}
+
+	void parse(SocketBuffer *recvbuf)
+	{
+		Log::getInstance()->log(recvbuf->buffer);
 	}
 
 

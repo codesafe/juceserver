@@ -127,6 +127,7 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\logger.cpp" />
     <ClCompile Include="..\..\Source\NewComponent.cpp" />
     <ClCompile Include="..\..\Source\MainComponent.cpp" />
     <ClCompile Include="..\..\Source\Main.cpp" />
@@ -1225,6 +1226,7 @@
     <ClCompile Include="..\..\JuceLibraryCode\juce_gui_extra.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\logger.h" />
     <ClInclude Include="..\..\Source\networkthread.h" />
     <ClInclude Include="..\..\Source\NewComponent.h" />
     <ClInclude Include="..\..\Source\MainComponent.h" />

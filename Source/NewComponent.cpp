@@ -141,8 +141,7 @@ void NewComponent::buttonClicked (Button* buttonThatWasClicked)
     if (buttonThatWasClicked == textButton)
     {
         //[UserButtonCode_textButton] -- add your button handler code here..
-		addMessage("11");
-
+		addMessage("Button 1");
 		char buf[1024] = { "0123" };
 		network.sendpacket(4, buf);
 
@@ -190,13 +189,19 @@ void NewComponent::addMessage(juce::String str)
 
 	label->setText(msg, juce::NotificationType::dontSendNotification);
 
-	Logger::outputDebugString("HH");
 }
 
 void NewComponent::timerCallback()
 {
+	if (!Log::getInstance()->loglist.empty())
+	{
+		for (size_t i = 0; i < Log::getInstance()->loglist.size(); i++)
+		{
+			addMessage(Log::getInstance()->loglist[i]);
+		}
 
-
+		Log::getInstance()->loglist.clear();
+	}
 }
 
 //[/MiscUserCode]

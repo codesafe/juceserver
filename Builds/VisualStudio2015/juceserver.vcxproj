@@ -127,10 +127,6 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\logger.cpp" />
-    <ClCompile Include="..\..\Source\NewComponent.cpp" />
-    <ClCompile Include="..\..\Source\MainComponent.cpp" />
-    <ClCompile Include="..\..\Source\Main.cpp" />
     <ClCompile Include="..\..\..\JUCE\modules\juce_core\containers\juce_AbstractFifo.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -1224,12 +1220,12 @@
     <ClCompile Include="..\..\JuceLibraryCode\juce_graphics.cpp" />
     <ClCompile Include="..\..\JuceLibraryCode\juce_gui_basics.cpp" />
     <ClCompile Include="..\..\JuceLibraryCode\juce_gui_extra.cpp" />
+    <ClCompile Include="..\..\Source\logger.cpp" />
+    <ClCompile Include="..\..\Source\Main.cpp" />
+    <ClCompile Include="..\..\Source\MainComponent.cpp" />
+    <ClCompile Include="..\..\Source\MainGui.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\logger.h" />
-    <ClInclude Include="..\..\Source\networkthread.h" />
-    <ClInclude Include="..\..\Source\NewComponent.h" />
-    <ClInclude Include="..\..\Source\MainComponent.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_core\containers\juce_AbstractFifo.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_core\containers\juce_Array.h" />
     <ClInclude Include="..\..\..\JUCE\modules\juce_core\containers\juce_ArrayAllocationBase.h" />
@@ -1615,6 +1611,11 @@
     <ClInclude Include="..\..\..\JUCE\modules\juce_gui_extra\juce_gui_extra.h" />
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h" />
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h" />
+    <ClInclude Include="..\..\Source\logger.h" />
+    <ClInclude Include="..\..\Source\MainComponent.h" />
+    <ClInclude Include="..\..\Source\MainGui.h" />
+    <ClInclude Include="..\..\Source\Network.h" />
+    <ClInclude Include="..\..\Source\networkthread.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\JUCE\modules\juce_graphics\image_formats\jpglib\changes to libjpeg for JUCE.txt" />

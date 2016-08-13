@@ -5,9 +5,11 @@
               jucerVersion="4.2.3">
   <MAINGROUP id="Oh7bTd" name="juceserver">
     <GROUP id="{F1060990-1CDC-1B7F-BC31-AACEEFCC7BDB}" name="Source">
-      <FILE id="EUgCjM" name="NewComponent.cpp" compile="1" resource="0"
-            file="Source/NewComponent.cpp"/>
-      <FILE id="R1I0b4" name="NewComponent.h" compile="0" resource="0" file="Source/NewComponent.h"/>
+      <FILE id="LOmRqh" name="logger.cpp" compile="1" resource="0" file="Source/logger.cpp"/>
+      <FILE id="PlKKMB" name="logger.h" compile="0" resource="0" file="Source/logger.h"/>
+      <FILE id="HWA803" name="Network.h" compile="0" resource="0" file="Source/Network.h"/>
+      <FILE id="VCJjnh" name="MainGui.cpp" compile="1" resource="0" file="Source/MainGui.cpp"/>
+      <FILE id="raMYHd" name="MainGui.h" compile="0" resource="0" file="Source/MainGui.h"/>
       <FILE id="ouAilP" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
       <FILE id="QEP3uy" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
@@ -32,6 +34,23 @@
         <MODULEPATH id="juce_cryptography" path="../JUCE/modules"/>
       </MODULEPATHS>
     </VS2015>
+    <VS2012 targetFolder="Builds/VisualStudio2012">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+                       isDebug="1" optimisation="1" targetName="juceserver"/>
+        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+                       isDebug="0" optimisation="3" targetName="juceserver"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_gui_extra" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../JUCE/modules"/>
+      </MODULEPATHS>
+    </VS2012>
   </EXPORTFORMATS>
   <MODULES>
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="0"/>

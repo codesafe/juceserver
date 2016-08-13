@@ -40,7 +40,7 @@ class MainGui  : public Component,
                  public ButtonListener,
                  public LabelListener,
                  public SliderListener,
-				private Timer
+				 public Timer
 {
 public:
     //==============================================================================
@@ -59,13 +59,14 @@ public:
     void sliderValueChanged (Slider* sliderThatWasMoved) override;
 
 
+
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
-	
+
 	std::deque<juce::String> messagelist;
 	void addMessage(juce::String str);
 
-	//[/UserVariables]
+    //[/UserVariables]
 
     //==============================================================================
     ScopedPointer<Label> label;

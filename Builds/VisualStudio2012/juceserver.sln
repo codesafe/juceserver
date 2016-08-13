@@ -1,0 +1,19 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2012
+Project("{213A2290-932A-3CAF-194C-60610FBF2718}") = "juceserver", "juceserver.vcxproj", "{3CF98DDA-16D8-9EA2-E7D3-3E4A57F78CB2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3CF98DDA-16D8-9EA2-E7D3-3E4A57F78CB2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3CF98DDA-16D8-9EA2-E7D3-3E4A57F78CB2}.Debug|Win32.Build.0 = Debug|Win32
+		{3CF98DDA-16D8-9EA2-E7D3-3E4A57F78CB2}.Release|Win32.ActiveCfg = Release|Win32
+		{3CF98DDA-16D8-9EA2-E7D3-3E4A57F78CB2}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

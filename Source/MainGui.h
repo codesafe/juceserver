@@ -17,15 +17,13 @@
   ==============================================================================
 */
 
-#ifndef __JUCE_HEADER_369DD91DB9C1C992__
-#define __JUCE_HEADER_369DD91DB9C1C992__
+#ifndef __JUCE_HEADER_ADBA7C90E028EAEC__
+#define __JUCE_HEADER_ADBA7C90E028EAEC__
 
 //[Headers]     -- You can add your own extra header files here --
-#include "../JuceLibraryCode/JuceHeader.h"
 #include <deque>
-#include "networkthread.h"
-
-#define MAX_MESSAGE	30
+#define MAX_MESSAGE	20
+#include "../JuceLibraryCode/JuceHeader.h"
 //[/Headers]
 
 
@@ -38,46 +36,55 @@
     Describe your class and how it works here!
                                                                     //[/Comments]
 */
-class NewComponent  : public Component,
-                      public ButtonListener,
-						private Timer
+class MainGui  : public Component,
+                 public ButtonListener,
+                 public LabelListener,
+                 public SliderListener,
+				private Timer
 {
 public:
     //==============================================================================
-    NewComponent ();
-    ~NewComponent();
+    MainGui ();
+    ~MainGui();
 
     //==============================================================================
     //[UserMethods]     -- You can add your own custom methods in this section.
+	void timerCallback() override;
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
     void buttonClicked (Button* buttonThatWasClicked) override;
-	void timerCallback() override;
+    void labelTextChanged (Label* labelThatHasChanged) override;
+    void sliderValueChanged (Slider* sliderThatWasMoved) override;
 
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+	
 	std::deque<juce::String> messagelist;
 	void addMessage(juce::String str);
 
-
-    //[/UserVariables]
+	//[/UserVariables]
 
     //==============================================================================
-    ScopedPointer<TextButton> textButton;
-    ScopedPointer<TextButton> textButton2;
-    ScopedPointer<TextButton> textButton3;
-    ScopedPointer<TextButton> textButton4;
     ScopedPointer<Label> label;
+    ScopedPointer<TextButton> playButton;
+    ScopedPointer<TextButton> upButton;
+    ScopedPointer<TextButton> downButton;
+    ScopedPointer<TextButton> rightButton;
+    ScopedPointer<Label> motionLabel;
+    ScopedPointer<Slider> slider;
+    ScopedPointer<TextButton> leftButton;
+    ScopedPointer<TextButton> displayButton;
+    ScopedPointer<Slider> slider2;
 
 
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NewComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainGui)
 };
 
 //[EndFile] You can add extra defines here...
 //[/EndFile]
 
-#endif   // __JUCE_HEADER_369DD91DB9C1C992__
+#endif   // __JUCE_HEADER_ADBA7C90E028EAEC__

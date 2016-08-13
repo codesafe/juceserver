@@ -10,15 +10,15 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "MainComponent.h"
-#include "NewComponent.h"
+#include "MainGui.h"
 
 
 //==============================================================================
-class juceserverApplication  : public JUCEApplication
+class serverApplication  : public JUCEApplication
 {
 public:
     //==============================================================================
-    juceserverApplication() {}
+    serverApplication() {}
 
     const String getApplicationName() override       { return ProjectInfo::projectName; }
     const String getApplicationVersion() override    { return ProjectInfo::versionString; }
@@ -67,9 +67,7 @@ public:
                                                     DocumentWindow::allButtons)
         {
             setUsingNativeTitleBar (true);
-            //setContentOwned (new MainContentComponent(), true);
-            setContentOwned (new NewComponent(), true);
-            
+            setContentOwned (new MainGui(), true);
 
             centreWithSize (getWidth(), getHeight());
             setVisible (true);
@@ -100,4 +98,4 @@ private:
 
 //==============================================================================
 // This macro generates the main() routine that launches the app.
-START_JUCE_APPLICATION (juceserverApplication)
+START_JUCE_APPLICATION (serverApplication)

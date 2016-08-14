@@ -63,10 +63,10 @@ MainGui::MainGui ()
     playButton->setButtonText (TRANS("Play"));
     playButton->addListener (this);
 
-    addAndMakeVisible (upButton = new TextButton ("Up"));
+    addAndMakeVisible (upButton = new TextButton ("Forward"));
     upButton->addListener (this);
 
-    addAndMakeVisible (downButton = new TextButton ("Down"));
+    addAndMakeVisible (downButton = new TextButton ("Backward"));
     downButton->addListener (this);
 
     addAndMakeVisible (rightButton = new TextButton ("Right"));
@@ -207,7 +207,9 @@ void MainGui::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == upButton)
     {
         //[UserButtonCode_upButton] -- add your button handler code here..
-		addMessage("Pushed up");
+		addMessage("Pushed forward");
+		int ispeed = (int)speed;
+		network.sendpacket(sizeof(int), WHEEL_FORWARD, (char*)&ispeed);
 
         //[/UserButtonCode_upButton]
     }
@@ -275,6 +277,8 @@ void MainGui::sliderValueChanged (Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == slider)
     {
         //[UserSliderCode_slider] -- add your slider handling code here..
+		double v1 = slider->getValue();
+		speed = v1;
         //[/UserSliderCode_slider]
     }
     else if (sliderThatWasMoved == slider2)

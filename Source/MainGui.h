@@ -62,6 +62,7 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+	double speed;
 	juce::String packetstr;
 	std::deque<juce::String> messagelist;
 	void addMessage(juce::String str);

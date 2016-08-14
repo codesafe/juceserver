@@ -8,10 +8,14 @@
 
 
 // packet
-#define DEVICERESET		"reset"
-#define	PLAYMOTION		"motion"
-#define WHEEL_FORWARD	"forward"
-#define WHEEL_BACKWARD	"backward"
+#define RESPONSE_OK		0x05
+#define RESPONSE_FAIL	0x06
+
+#define DEVICERESET		0x10
+#define	PLAYMOTION		0x20
+#define WHEEL_FORWARD	0x30
+#define WHEEL_BACKWARD	0x31
+#define DISPLAY_PIC		0x40
 
 
 
@@ -147,23 +151,36 @@ public:
 
     }
 
-	bool	sendpacket(int packetsize, char *packet)
+	bool	sendpacket(int packetsize, char packet, char *data)
 	{
 		if (clisock == -1) return false;
 
 		sendbuffer.currentsize = 0;
-		sendbuffer.totalsize = packetsize+sizeof(int);
+		packetsize += 1;
+		sendbuffer.totalsize = packetsize + sizeof(int);
 
 		memcpy(sendbuffer.buffer, (void*)&packetsize, sizeof(int));
-		memcpy(sendbuffer.buffer+sizeof(int), packet, packetsize);
-
+		memcpy(sendbuffer.buffer+sizeof(int), &packet, sizeof(char));
+		memcpy(sendbuffer.buffer+sizeof(int)+sizeof(char), data, packetsize-1);
 
 		return true;
 	}
 
 	void parse(SocketBuffer *recvbuf)
 	{
-		Log::getInstance()->log(recvbuf->buffer);
+		char packet = (char&)*recvbuf->buffer;
+
+		if( packet == RESPONSE_OK )
+		{
+			juce::String log = "Response_ok : " + (juce::String)(recvbuf->buffer+sizeof(char));
+			Log::getInstance()->log(log);
+		}
+		else
+		{
+			juce::String log = "Response_fail : " + (juce::String)(recvbuf->buffer+sizeof(char));
+			Log::getInstance()->log(log);
+		}
+
 	}
 
 

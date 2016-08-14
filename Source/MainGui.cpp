@@ -198,8 +198,9 @@ void MainGui::buttonClicked (Button* buttonThatWasClicked)
         //[UserButtonCode_playButton] -- add your button handler code here..
 		addMessage("Pushed playButton");
 
-		char buf[1024] = { "0123" };
-		network.sendpacket(4, buf);
+		std::string str = packetstr.toStdString();
+		if(str.size() > 0)
+			network.sendpacket(str.size(), PLAYMOTION, (char*)str.c_str());
 
         //[/UserButtonCode_playButton]
     }
@@ -237,6 +238,11 @@ void MainGui::buttonClicked (Button* buttonThatWasClicked)
         //[UserButtonCode_displayButton] -- add your button handler code here..
 		addMessage("Pushed display");
 
+		std::string str = packetstr.toStdString();
+		if(str.size() > 0)
+			network.sendpacket(str.size(), DISPLAY_PIC, (char*)str.c_str());
+
+
         //[/UserButtonCode_displayButton]
     }
 
@@ -252,8 +258,8 @@ void MainGui::labelTextChanged (Label* labelThatHasChanged)
     if (labelThatHasChanged == motionLabel)
     {
         //[UserLabelCode_motionLabel] -- add your label text handling code here..
-		addMessage(motionLabel->getText());
-
+		packetstr = motionLabel->getText();
+		addMessage(packetstr);
         //[/UserLabelCode_motionLabel]
     }
 

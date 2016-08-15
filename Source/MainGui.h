@@ -62,6 +62,8 @@ public:
 
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
+	double rspeed;
+	double lspeed;
 	double speed;
 	juce::String packetstr;
 	std::deque<juce::String> messagelist;
@@ -80,6 +82,8 @@ private:
     ScopedPointer<TextButton> leftButton;
     ScopedPointer<TextButton> displayButton;
     ScopedPointer<Slider> slider2;
+    ScopedPointer<TextButton> stopButton;
+    ScopedPointer<Slider> slider3;
 
 
     //==============================================================================

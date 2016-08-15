@@ -63,10 +63,12 @@ MainGui::MainGui ()
     playButton->setButtonText (TRANS("Play"));
     playButton->addListener (this);
 
-    addAndMakeVisible (upButton = new TextButton ("Forward"));
+    addAndMakeVisible (upButton = new TextButton ("Up"));
+    upButton->setButtonText (TRANS("Forward"));
     upButton->addListener (this);
 
-    addAndMakeVisible (downButton = new TextButton ("Backward"));
+    addAndMakeVisible (downButton = new TextButton ("Down"));
+    downButton->setButtonText (TRANS("Backward"));
     downButton->addListener (this);
 
     addAndMakeVisible (rightButton = new TextButton ("Right"));
@@ -84,9 +86,9 @@ MainGui::MainGui ()
     motionLabel->addListener (this);
 
     addAndMakeVisible (slider = new Slider ("new slider"));
-    slider->setRange (1, 1024, 1);
-    slider->setSliderStyle (Slider::LinearHorizontal);
-    slider->setTextBoxStyle (Slider::TextBoxLeft, true, 80, 20);
+    slider->setRange (0, 1023, 1);
+    slider->setSliderStyle (Slider::LinearVertical);
+    slider->setTextBoxStyle (Slider::TextBoxAbove, false, 80, 20);
     slider->addListener (this);
 
     addAndMakeVisible (leftButton = new TextButton ("Left"));
@@ -97,10 +99,19 @@ MainGui::MainGui ()
     displayButton->addListener (this);
 
     addAndMakeVisible (slider2 = new Slider ("new slider"));
-    slider2->setRange (1, 1000, 1);
-    slider2->setSliderStyle (Slider::LinearHorizontal);
-    slider2->setTextBoxStyle (Slider::TextBoxLeft, false, 80, 20);
+    slider2->setRange (0, 1023, 1);
+    slider2->setSliderStyle (Slider::LinearVertical);
+    slider2->setTextBoxStyle (Slider::TextBoxAbove, false, 80, 20);
     slider2->addListener (this);
+
+    addAndMakeVisible (stopButton = new TextButton ("Stop"));
+    stopButton->addListener (this);
+
+    addAndMakeVisible (slider3 = new Slider ("new slider"));
+    slider3->setRange (1, 1024, 1);
+    slider3->setSliderStyle (Slider::LinearHorizontal);
+    slider3->setTextBoxStyle (Slider::TextBoxLeft, false, 80, 20);
+    slider3->addListener (this);
 
 
     //[UserPreSize]
@@ -115,6 +126,11 @@ MainGui::MainGui ()
 	unsigned int id;
 	hand = (HANDLE)_beginthreadex(NULL, 0, NetThread, (void *)xxx, 0, &id);
 	label->setText("", juce::NotificationType::dontSendNotification);
+
+	speed = 1;
+	lspeed = 1;
+	rspeed = 1;
+
     //[/Constructor]
 }
 
@@ -133,6 +149,8 @@ MainGui::~MainGui()
     leftButton = nullptr;
     displayButton = nullptr;
     slider2 = nullptr;
+    stopButton = nullptr;
+    slider3 = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -149,14 +167,14 @@ void MainGui::paint (Graphics& g)
 
     g.setColour (Colours::black);
     g.setFont (Font (15.00f, Font::plain));
-    g.drawText (TRANS("Speed"),
-                301, 399, 75, 30,
+    g.drawText (TRANS("R-Speed"),
+                526, 383, 75, 30,
                 Justification::centred, true);
 
     g.setColour (Colours::black);
     g.setFont (Font (15.00f, Font::plain));
-    g.drawText (TRANS("Degree"),
-                301, 431, 75, 30,
+    g.drawText (TRANS("L-Speed"),
+                254, 383, 75, 30,
                 Justification::centred, true);
 
     g.setColour (Colours::brown);
@@ -176,14 +194,16 @@ void MainGui::resized()
 
     label->setBounds (8, 40, 584, 344);
     playButton->setBounds (32, 496, 150, 32);
-    upButton->setBounds (440, 480, 64, 32);
-    downButton->setBounds (440, 560, 64, 29);
-    rightButton->setBounds (512, 520, 64, 32);
+    upButton->setBounds (400, 440, 64, 32);
+    downButton->setBounds (400, 552, 64, 29);
+    rightButton->setBounds (480, 496, 64, 32);
     motionLabel->setBounds (32, 448, 152, 32);
-    slider->setBounds (368, 400, 216, 24);
-    leftButton->setBounds (368, 520, 64, 32);
+    slider->setBounds (552, 416, 40, 176);
+    leftButton->setBounds (320, 496, 64, 32);
     displayButton->setBounds (32, 544, 150, 32);
-    slider2->setBounds (368, 432, 216, 24);
+    slider2->setBounds (264, 416, 48, 176);
+    stopButton->setBounds (400, 496, 64, 29);
+    slider3->setBounds (360, 400, 150, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -207,8 +227,9 @@ void MainGui::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == upButton)
     {
         //[UserButtonCode_upButton] -- add your button handler code here..
-		addMessage("Pushed forward");
+
 		int ispeed = (int)speed;
+		addMessage(juce::String::formatted("Move forward : %d", ispeed));
 		network.sendpacket(sizeof(int), WHEEL_FORWARD, (char*)&ispeed);
 
         //[/UserButtonCode_upButton]
@@ -216,22 +237,39 @@ void MainGui::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == downButton)
     {
         //[UserButtonCode_downButton] -- add your button handler code here..
-		addMessage("Pushed down");
+		int ispeed = (int)speed;
+		addMessage(juce::String::formatted("Move backward : %d", ispeed));
+		network.sendpacket(sizeof(int), WHEEL_BACKWARD, (char*)&ispeed);
 
         //[/UserButtonCode_downButton]
     }
     else if (buttonThatWasClicked == rightButton)
     {
         //[UserButtonCode_rightButton] -- add your button handler code here..
+		int _rspeed = (int)rspeed;
+		int _lspeed = (int)lspeed;
 
-		addMessage("Pushed right");
+		addMessage(juce::String::formatted("Turn right : rspeed(%d)  lspeed(%d)", _rspeed, _lspeed));
+
+		char data[8];
+		memcpy(data, &_lspeed, sizeof(int));
+		memcpy(data+sizeof(int), &_rspeed, sizeof(int));
+		network.sendpacket(sizeof(int)+sizeof(int), WHEEL_TURNRIGHT, data);
 
         //[/UserButtonCode_rightButton]
     }
     else if (buttonThatWasClicked == leftButton)
     {
         //[UserButtonCode_leftButton] -- add your button handler code here..
-		addMessage("Pushed left");
+		int _rspeed = (int)rspeed;
+		int _lspeed = (int)lspeed;
+
+		addMessage(juce::String::formatted("Turn left : rspeed(%d)  lspeed(%d)", _rspeed, _lspeed));
+
+		char data[8];
+		memcpy(data, &_lspeed, sizeof(int));
+		memcpy(data+sizeof(int), &_rspeed, sizeof(int));
+		network.sendpacket(sizeof(int)+sizeof(int), WHEEL_TURNLEFT, data);
 
         //[/UserButtonCode_leftButton]
     }
@@ -246,6 +284,14 @@ void MainGui::buttonClicked (Button* buttonThatWasClicked)
 
 
         //[/UserButtonCode_displayButton]
+    }
+    else if (buttonThatWasClicked == stopButton)
+    {
+        //[UserButtonCode_stopButton] -- add your button handler code here..
+		addMessage("Move Stopped");
+		int ispeed = 0;
+		network.sendpacket(sizeof(int), WHEEL_STOP, (char*)&ispeed);
+        //[/UserButtonCode_stopButton]
     }
 
     //[UserbuttonClicked_Post]
@@ -277,14 +323,20 @@ void MainGui::sliderValueChanged (Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == slider)
     {
         //[UserSliderCode_slider] -- add your slider handling code here..
-		double v1 = slider->getValue();
-		speed = v1;
+		rspeed = slider->getValue();
         //[/UserSliderCode_slider]
     }
     else if (sliderThatWasMoved == slider2)
     {
         //[UserSliderCode_slider2] -- add your slider handling code here..
+		lspeed = slider2->getValue();
         //[/UserSliderCode_slider2]
+    }
+    else if (sliderThatWasMoved == slider3)
+    {
+        //[UserSliderCode_slider3] -- add your slider handling code here..
+		speed = slider3->getValue();
+        //[/UserSliderCode_slider3]
     }
 
     //[UsersliderValueChanged_Post]
@@ -343,9 +395,9 @@ BEGIN_JUCER_METADATA
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="600" initialHeight="600">
   <BACKGROUND backgroundColour="ffffffff">
-    <TEXT pos="301 399 75 30" fill="solid: ff000000" hasStroke="0" text="Speed"
+    <TEXT pos="526 383 75 30" fill="solid: ff000000" hasStroke="0" text="R-Speed"
           fontname="Default font" fontsize="15" bold="0" italic="0" justification="36"/>
-    <TEXT pos="301 431 75 30" fill="solid: ff000000" hasStroke="0" text="Degree"
+    <TEXT pos="254 383 75 30" fill="solid: ff000000" hasStroke="0" text="L-Speed"
           fontname="Default font" fontsize="15" bold="0" italic="0" justification="36"/>
     <ELLIPSE pos="13 7 25 25" fill="solid: ffa52a2a" hasStroke="1" stroke="2.1, mitered, butt"
              strokeColour="solid: ff0072bd"/>
@@ -359,13 +411,13 @@ BEGIN_JUCER_METADATA
               virtualName="" explicitFocusOrder="0" pos="32 496 150 32" buttonText="Play"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="Up" id="aebc4158a6eb6b7f" memberName="upButton" virtualName=""
-              explicitFocusOrder="0" pos="440 480 64 32" buttonText="Up" connectedEdges="0"
-              needsCallback="1" radioGroupId="0"/>
+              explicitFocusOrder="0" pos="400 440 64 32" buttonText="Forward"
+              connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="Down" id="4acf33de38e1f39c" memberName="downButton" virtualName=""
-              explicitFocusOrder="0" pos="440 560 64 29" buttonText="Down"
+              explicitFocusOrder="0" pos="400 552 64 29" buttonText="Backward"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="Right" id="e21e3e353ac7518c" memberName="rightButton" virtualName=""
-              explicitFocusOrder="0" pos="512 520 64 32" buttonText="Right"
+              explicitFocusOrder="0" pos="480 496 64 32" buttonText="Right"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <LABEL name="motionLabel" id="996f53ca37638546" memberName="motionLabel"
          virtualName="" explicitFocusOrder="0" pos="32 448 152 32" bkgCol="ff5e5e5e"
@@ -373,18 +425,26 @@ BEGIN_JUCER_METADATA
          editableSingleClick="1" editableDoubleClick="1" focusDiscardsChanges="0"
          fontname="Default font" fontsize="15" bold="0" italic="0" justification="33"/>
   <SLIDER name="new slider" id="205c96fe532e179a" memberName="slider" virtualName=""
-          explicitFocusOrder="0" pos="368 400 216 24" min="1" max="1024"
-          int="1" style="LinearHorizontal" textBoxPos="TextBoxLeft" textBoxEditable="0"
+          explicitFocusOrder="0" pos="552 416 40 176" min="0" max="1023"
+          int="1" style="LinearVertical" textBoxPos="TextBoxAbove" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1" needsCallback="1"/>
   <TEXTBUTTON name="Left" id="b1bebbabb70704e8" memberName="leftButton" virtualName=""
-              explicitFocusOrder="0" pos="368 520 64 32" buttonText="Left"
+              explicitFocusOrder="0" pos="320 496 64 32" buttonText="Left"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="displayButton" id="dcc6371a83dc37f0" memberName="displayButton"
               virtualName="" explicitFocusOrder="0" pos="32 544 150 32" buttonText="display"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <SLIDER name="new slider" id="f9cf708c27ef3f2a" memberName="slider2"
-          virtualName="" explicitFocusOrder="0" pos="368 432 216 24" min="1"
-          max="1000" int="1" style="LinearHorizontal" textBoxPos="TextBoxLeft"
+          virtualName="" explicitFocusOrder="0" pos="264 416 48 176" min="0"
+          max="1023" int="1" style="LinearVertical" textBoxPos="TextBoxAbove"
+          textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
+          needsCallback="1"/>
+  <TEXTBUTTON name="Stop" id="3b9eb620d887ad06" memberName="stopButton" virtualName=""
+              explicitFocusOrder="0" pos="400 496 64 29" buttonText="Stop"
+              connectedEdges="0" needsCallback="1" radioGroupId="0"/>
+  <SLIDER name="new slider" id="a24977e8b1e23e79" memberName="slider3"
+          virtualName="" explicitFocusOrder="0" pos="360 400 150 24" min="1"
+          max="1024" int="1" style="LinearHorizontal" textBoxPos="TextBoxLeft"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
           needsCallback="1"/>
 </JUCER_COMPONENT>

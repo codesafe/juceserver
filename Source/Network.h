@@ -13,8 +13,13 @@
 
 #define DEVICERESET		0x10
 #define	PLAYMOTION		0x20
-#define WHEEL_FORWARD	0x30
-#define WHEEL_BACKWARD	0x31
+
+#define WHEEL_FORWARD		0x30
+#define WHEEL_BACKWARD		0x31
+#define WHEEL_STOP			0x32
+#define WHEEL_TURNLEFT		0x33
+#define WHEEL_TURNRIGHT		0x34
+
 #define DISPLAY_PIC		0x40
 
 

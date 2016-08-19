@@ -22,7 +22,8 @@
 
 //[Headers]     -- You can add your own extra header files here --
 #include <deque>
-#define MAX_MESSAGE	20
+#define MAX_MESSAGE	14
+#define MAX_CLIENTMESSAGE	13
 #include "../JuceLibraryCode/JuceHeader.h"
 //[/Headers]
 
@@ -37,10 +38,10 @@
                                                                     //[/Comments]
 */
 class MainGui  : public Component,
+                 public Timer,
                  public ButtonListener,
                  public LabelListener,
-                 public SliderListener,
-				 public Timer
+                 public SliderListener
 {
 public:
     //==============================================================================
@@ -69,6 +70,8 @@ private:
 	std::deque<juce::String> messagelist;
 	void addMessage(juce::String str);
 
+	std::deque<juce::String> clientmessagelist;
+	void addClientMessage(juce::String str);
     //[/UserVariables]
 
     //==============================================================================
@@ -84,6 +87,8 @@ private:
     ScopedPointer<Slider> slider2;
     ScopedPointer<TextButton> stopButton;
     ScopedPointer<Slider> slider3;
+    ScopedPointer<TextButton> patchButton;
+    ScopedPointer<TextEditor> textEditor;
 
 
     //==============================================================================

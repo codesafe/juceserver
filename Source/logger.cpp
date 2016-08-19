@@ -17,3 +17,8 @@ void Log::log(juce::String log)
 {
 	loglist.push_back(log);
 }
+
+void Log::clientlog(juce::String log)
+{
+	clientloglist.push_back(log);
+}

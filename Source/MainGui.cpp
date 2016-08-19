@@ -79,9 +79,10 @@ MainGui::MainGui ()
     motionLabel->setFont (Font (15.00f, Font::plain));
     motionLabel->setJustificationType (Justification::centredLeft);
     motionLabel->setEditable (true, true, false);
-    motionLabel->setColour (Label::backgroundColourId, Colour (0xff5e5e5e));
-    motionLabel->setColour (Label::textColourId, Colour (0xffbee900));
-    motionLabel->setColour (TextEditor::textColourId, Colour (0xffdded06));
+    motionLabel->setColour (Label::backgroundColourId, Colours::white);
+    motionLabel->setColour (Label::textColourId, Colours::black);
+    motionLabel->setColour (Label::outlineColourId, Colours::black);
+    motionLabel->setColour (TextEditor::textColourId, Colours::black);
     motionLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
     motionLabel->addListener (this);
 
@@ -113,11 +114,28 @@ MainGui::MainGui ()
     slider3->setTextBoxStyle (Slider::TextBoxLeft, false, 80, 20);
     slider3->addListener (this);
 
+    addAndMakeVisible (patchButton = new TextButton ("patchButton"));
+    patchButton->setButtonText (TRANS("patch"));
+    patchButton->addListener (this);
+    patchButton->setColour (TextButton::buttonColourId, Colour (0xff650000));
+    patchButton->setColour (TextButton::textColourOffId, Colours::white);
+
+    addAndMakeVisible (textEditor = new TextEditor ("new text editor"));
+    textEditor->setMultiLine (true);
+    textEditor->setReturnKeyStartsNewLine (true);
+    textEditor->setReadOnly (true);
+    textEditor->setScrollbarsShown (true);
+    textEditor->setCaretVisible (false);
+    textEditor->setPopupMenuEnabled (true);
+    textEditor->setColour (TextEditor::textColourId, Colours::white);
+    textEditor->setColour (TextEditor::backgroundColourId, Colour (0xff373737));
+    textEditor->setText (String());
+
 
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (600, 600);
+    setSize (800, 700);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -151,6 +169,8 @@ MainGui::~MainGui()
     slider2 = nullptr;
     stopButton = nullptr;
     slider3 = nullptr;
+    patchButton = nullptr;
+    textEditor = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -168,20 +188,14 @@ void MainGui::paint (Graphics& g)
     g.setColour (Colours::black);
     g.setFont (Font (15.00f, Font::plain));
     g.drawText (TRANS("R-Speed"),
-                526, 383, 75, 30,
+                702, 463, 75, 30,
                 Justification::centred, true);
 
     g.setColour (Colours::black);
     g.setFont (Font (15.00f, Font::plain));
     g.drawText (TRANS("L-Speed"),
-                254, 383, 75, 30,
+                430, 463, 75, 30,
                 Justification::centred, true);
-
-    g.setColour (Colours::brown);
-    g.fillEllipse (13.0f, 7.0f, 25.0f, 25.0f);
-
-    g.setColour (Colour (0xff0072bd));
-    g.drawEllipse (13.0f, 7.0f, 25.0f, 25.0f, 2.100f);
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -192,18 +206,20 @@ void MainGui::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    label->setBounds (8, 40, 584, 344);
-    playButton->setBounds (32, 496, 150, 32);
-    upButton->setBounds (400, 440, 64, 32);
-    downButton->setBounds (400, 552, 64, 29);
-    rightButton->setBounds (480, 496, 64, 32);
-    motionLabel->setBounds (32, 448, 152, 32);
-    slider->setBounds (552, 416, 40, 176);
-    leftButton->setBounds (320, 496, 64, 32);
-    displayButton->setBounds (32, 544, 150, 32);
-    slider2->setBounds (264, 416, 48, 176);
-    stopButton->setBounds (400, 496, 64, 29);
-    slider3->setBounds (360, 400, 150, 24);
+    label->setBounds (8, 16, 784, 224);
+    playButton->setBounds (16, 552, 150, 32);
+    upButton->setBounds (576, 528, 64, 32);
+    downButton->setBounds (576, 640, 64, 29);
+    rightButton->setBounds (656, 584, 64, 32);
+    motionLabel->setBounds (16, 504, 152, 32);
+    slider->setBounds (728, 504, 40, 176);
+    leftButton->setBounds (496, 584, 64, 32);
+    displayButton->setBounds (16, 600, 150, 32);
+    slider2->setBounds (440, 504, 48, 176);
+    stopButton->setBounds (576, 584, 64, 29);
+    slider3->setBounds (536, 488, 150, 24);
+    patchButton->setBounds (16, 648, 150, 32);
+    textEditor->setBounds (8, 256, 784, 192);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -293,6 +309,12 @@ void MainGui::buttonClicked (Button* buttonThatWasClicked)
 		network.sendpacket(sizeof(int), WHEEL_STOP, (char*)&ispeed);
         //[/UserButtonCode_stopButton]
     }
+    else if (buttonThatWasClicked == patchButton)
+    {
+        //[UserButtonCode_patchButton] -- add your button handler code here..
+		addClientMessage("asdASD");
+        //[/UserButtonCode_patchButton]
+    }
 
     //[UserbuttonClicked_Post]
     //[/UserbuttonClicked_Post]
@@ -361,7 +383,22 @@ void MainGui::addMessage(juce::String str)
 	}
 
 	label->setText(msg, juce::NotificationType::dontSendNotification);
+}
 
+void MainGui::addClientMessage(juce::String str)
+{
+	if (clientmessagelist.size() > MAX_CLIENTMESSAGE)
+		clientmessagelist.pop_front();
+	clientmessagelist.push_back(str);
+
+	juce::String msg;
+	for (size_t i = 0; i < clientmessagelist.size(); i++)
+	{
+		if (i > 0) msg += "\n";
+		msg += clientmessagelist[i];
+	}
+
+	textEditor->setText(msg, juce::NotificationType::dontSendNotification);
 }
 
 void MainGui::timerCallback()
@@ -374,6 +411,16 @@ void MainGui::timerCallback()
 		}
 
 		Log::getInstance()->loglist.clear();
+	}
+
+	if (!Log::getInstance()->clientloglist.empty())
+	{
+		for (size_t i = 0; i < Log::getInstance()->clientloglist.size(); i++)
+		{
+			addMessage(Log::getInstance()->loglist[i]);
+		}
+
+		Log::getInstance()->clientloglist.clear();
 	}
 }
 
@@ -391,62 +438,69 @@ void MainGui::timerCallback()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="MainGui" componentName=""
-                 parentClasses="public Component" constructorParams="" variableInitialisers=""
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="600" initialHeight="600">
+                 parentClasses="public Component, public Timer" constructorParams=""
+                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
+                 overlayOpacity="0.330" fixedSize="1" initialWidth="800" initialHeight="700">
   <BACKGROUND backgroundColour="ffffffff">
-    <TEXT pos="526 383 75 30" fill="solid: ff000000" hasStroke="0" text="R-Speed"
+    <TEXT pos="702 463 75 30" fill="solid: ff000000" hasStroke="0" text="R-Speed"
           fontname="Default font" fontsize="15" bold="0" italic="0" justification="36"/>
-    <TEXT pos="254 383 75 30" fill="solid: ff000000" hasStroke="0" text="L-Speed"
+    <TEXT pos="430 463 75 30" fill="solid: ff000000" hasStroke="0" text="L-Speed"
           fontname="Default font" fontsize="15" bold="0" italic="0" justification="36"/>
-    <ELLIPSE pos="13 7 25 25" fill="solid: ffa52a2a" hasStroke="1" stroke="2.1, mitered, butt"
-             strokeColour="solid: ff0072bd"/>
   </BACKGROUND>
   <LABEL name="new label" id="a468f7d6183fa770" memberName="label" virtualName=""
-         explicitFocusOrder="0" pos="8 40 584 344" bkgCol="ff000000" textCol="ffffffff"
+         explicitFocusOrder="0" pos="8 16 784 224" bkgCol="ff000000" textCol="ffffffff"
          edTextCol="ff000000" edBkgCol="0" labelText="label text" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15" bold="0" italic="0" justification="9"/>
   <TEXTBUTTON name="PlayMotion" id="45a4cb1f3a68127f" memberName="playButton"
-              virtualName="" explicitFocusOrder="0" pos="32 496 150 32" buttonText="Play"
+              virtualName="" explicitFocusOrder="0" pos="16 552 150 32" buttonText="Play"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="Up" id="aebc4158a6eb6b7f" memberName="upButton" virtualName=""
-              explicitFocusOrder="0" pos="400 440 64 32" buttonText="Forward"
+              explicitFocusOrder="0" pos="576 528 64 32" buttonText="Forward"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="Down" id="4acf33de38e1f39c" memberName="downButton" virtualName=""
-              explicitFocusOrder="0" pos="400 552 64 29" buttonText="Backward"
+              explicitFocusOrder="0" pos="576 640 64 29" buttonText="Backward"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="Right" id="e21e3e353ac7518c" memberName="rightButton" virtualName=""
-              explicitFocusOrder="0" pos="480 496 64 32" buttonText="Right"
+              explicitFocusOrder="0" pos="656 584 64 32" buttonText="Right"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <LABEL name="motionLabel" id="996f53ca37638546" memberName="motionLabel"
-         virtualName="" explicitFocusOrder="0" pos="32 448 152 32" bkgCol="ff5e5e5e"
-         textCol="ffbee900" edTextCol="ffdded06" edBkgCol="0" labelText=""
-         editableSingleClick="1" editableDoubleClick="1" focusDiscardsChanges="0"
-         fontname="Default font" fontsize="15" bold="0" italic="0" justification="33"/>
+         virtualName="" explicitFocusOrder="0" pos="16 504 152 32" bkgCol="ffffffff"
+         textCol="ff000000" outlineCol="ff000000" edTextCol="ff000000"
+         edBkgCol="0" labelText="" editableSingleClick="1" editableDoubleClick="1"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
+         bold="0" italic="0" justification="33"/>
   <SLIDER name="new slider" id="205c96fe532e179a" memberName="slider" virtualName=""
-          explicitFocusOrder="0" pos="552 416 40 176" min="0" max="1023"
+          explicitFocusOrder="0" pos="728 504 40 176" min="0" max="1023"
           int="1" style="LinearVertical" textBoxPos="TextBoxAbove" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1" needsCallback="1"/>
   <TEXTBUTTON name="Left" id="b1bebbabb70704e8" memberName="leftButton" virtualName=""
-              explicitFocusOrder="0" pos="320 496 64 32" buttonText="Left"
+              explicitFocusOrder="0" pos="496 584 64 32" buttonText="Left"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="displayButton" id="dcc6371a83dc37f0" memberName="displayButton"
-              virtualName="" explicitFocusOrder="0" pos="32 544 150 32" buttonText="display"
+              virtualName="" explicitFocusOrder="0" pos="16 600 150 32" buttonText="display"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <SLIDER name="new slider" id="f9cf708c27ef3f2a" memberName="slider2"
-          virtualName="" explicitFocusOrder="0" pos="264 416 48 176" min="0"
+          virtualName="" explicitFocusOrder="0" pos="440 504 48 176" min="0"
           max="1023" int="1" style="LinearVertical" textBoxPos="TextBoxAbove"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
           needsCallback="1"/>
   <TEXTBUTTON name="Stop" id="3b9eb620d887ad06" memberName="stopButton" virtualName=""
-              explicitFocusOrder="0" pos="400 496 64 29" buttonText="Stop"
+              explicitFocusOrder="0" pos="576 584 64 29" buttonText="Stop"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <SLIDER name="new slider" id="a24977e8b1e23e79" memberName="slider3"
-          virtualName="" explicitFocusOrder="0" pos="360 400 150 24" min="1"
+          virtualName="" explicitFocusOrder="0" pos="536 488 150 24" min="1"
           max="1024" int="1" style="LinearHorizontal" textBoxPos="TextBoxLeft"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
           needsCallback="1"/>
+  <TEXTBUTTON name="patchButton" id="477807e8719116cc" memberName="patchButton"
+              virtualName="" explicitFocusOrder="0" pos="16 648 150 32" bgColOff="ff650000"
+              textCol="ffffffff" buttonText="patch" connectedEdges="0" needsCallback="1"
+              radioGroupId="0"/>
+  <TEXTEDITOR name="new text editor" id="f3206155cf103681" memberName="textEditor"
+              virtualName="" explicitFocusOrder="0" pos="8 256 784 192" textcol="ffffffff"
+              bkgcol="ff373737" initialText="" multiline="1" retKeyStartsLine="1"
+              readonly="1" scrollbars="1" caret="0" popupmenu="1"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

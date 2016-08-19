@@ -11,6 +11,11 @@
 #define RESPONSE_OK		0x05
 #define RESPONSE_FAIL	0x06
 
+#define CLIENT_LOG_INFO		0x0a
+#define CLIENT_LOG_WARN		0x0b
+#define CLIENT_LOG_ERR		0x0c
+
+
 #define DEVICERESET		0x10
 #define	PLAYMOTION		0x20
 
@@ -175,17 +180,40 @@ public:
 	{
 		char packet = (char&)*recvbuf->buffer;
 
-		if( packet == RESPONSE_OK )
+		switch (packet)
 		{
-			juce::String log = "Response_ok : " + (juce::String)(recvbuf->buffer+sizeof(char));
-			Log::getInstance()->log(log);
-		}
-		else
-		{
-			juce::String log = "Response_fail : " + (juce::String)(recvbuf->buffer+sizeof(char));
-			Log::getInstance()->log(log);
-		}
+			case RESPONSE_OK :
+			{
+				juce::String log = "Response_ok : " + (juce::String)(recvbuf->buffer + sizeof(char));
+				Log::getInstance()->log(log);
+			}
+			break;
 
+			case CLIENT_LOG_INFO:
+			{
+				juce::String log = "info : " + (juce::String)(recvbuf->buffer + sizeof(char));
+				Log::getInstance()->clientlog(log);
+			}
+			break;
+			case CLIENT_LOG_WARN:
+			{
+				juce::String log = "warn : " + (juce::String)(recvbuf->buffer + sizeof(char));
+				Log::getInstance()->clientlog(log);
+			}
+			break;
+			case CLIENT_LOG_ERR:
+			{
+				juce::String log = "error : " + (juce::String)(recvbuf->buffer + sizeof(char));
+				Log::getInstance()->clientlog(log);
+			}
+			break;
+
+			default :
+			{
+				juce::String log = "Response_fail : " + (juce::String)(recvbuf->buffer + sizeof(char));
+				Log::getInstance()->log(log);
+			}
+		}
 	}
 
 

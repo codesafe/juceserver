@@ -15,7 +15,9 @@ public:
 	};
 
 	void log(juce::String log);
+	void clientlog(juce::String log);
 	std::vector<juce::String>	loglist;
+	std::vector<juce::String>	clientloglist;
 
 private:
 	Log();

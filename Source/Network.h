@@ -4,7 +4,7 @@
 #include "logger.h"
 
 #define PORT 8888
-#define SOCKET_BUFFER 1024
+#define SOCKET_BUFFER 4096
 
 
 // packet
@@ -36,7 +36,7 @@ struct SocketBuffer
 	char	buffer[SOCKET_BUFFER];
 	SocketBuffer()
 	{
-		totalsize = -1;
+		totalsize = 0;
 		currentsize = 0;
 		memset(buffer, 0, SOCKET_BUFFER);
 	}
@@ -115,16 +115,25 @@ public:
 
 				char in[SOCKET_BUFFER];
 				memset(&in, 0, sizeof(in));
-
-				char buffer[SOCKET_BUFFER];
-				int readn = recv(clisock, buffer, SOCKET_BUFFER, 0);
-				if (readn > 0)
+				int recvsize = recv(clisock, in, SOCKET_BUFFER, 0);
+				if (recvsize > 0)
 				{
-					SocketBuffer recvbuf;
-					recvbuf.totalsize = readn;
-					int psize = (int&)*buffer;
-					memcpy(recvbuf.buffer, buffer + sizeof(int), psize);
-					parse(&recvbuf);
+					if (recvbuffer.totalsize > 0)
+					{
+						// 뒤에 이어 받아야함
+						memcpy(recvbuffer.buffer+recvbuffer.totalsize, in, recvsize);
+						recvbuffer.totalsize += recvsize;
+						recvdone();
+					}
+					else
+					{
+						// 처음 받음
+						recvbuffer.totalsize = recvsize;
+						memcpy(recvbuffer.buffer, in, recvsize);
+						recvdone();
+					}
+
+
 				}
 				else
 				{
@@ -159,59 +168,101 @@ public:
 
 		}
 
+
+		// parse recvpacket
+		if (!recvbufferlist.empty())
+		{
+			for (size_t i = 0; i < recvbufferlist.size(); i++)
+			{
+				parse(&recvbufferlist[i]);
+			}
+			recvbufferlist.clear();
+		}
     }
 
-	bool	sendpacket(int packetsize, char packet, char *data)
+	void	recvdone()
+	{
+		while (1)
+		{
+			if (recvbuffer.totalsize >= sizeof(int) + sizeof(char))	// data size + packet
+			{
+				int datasize = (int&)*recvbuffer.buffer;
+				if (recvbuffer.totalsize >= sizeof(int) + sizeof(char) + datasize)
+				{
+					SocketBuffer buffer;
+					buffer.totalsize = sizeof(int) + sizeof(char) + datasize;
+					memcpy(buffer.buffer, recvbuffer.buffer, buffer.totalsize);
+					recvbufferlist.push_back(buffer);
+					
+					recvbuffer.totalsize -= buffer.totalsize;
+
+					// 남아있는게 있는가?
+					if (recvbuffer.totalsize > 0)
+					{
+						char tempbuffer[SOCKET_BUFFER] = { 0, };
+						memcpy(tempbuffer, recvbuffer.buffer+buffer.totalsize, recvbuffer.totalsize);
+						memcpy(recvbuffer.buffer, tempbuffer, SOCKET_BUFFER);
+					}
+				}
+				else
+					break;
+			}
+			else
+				break;
+		}
+	}
+
+	bool	sendpacket(char packet, char *data, int datasize)
 	{
 		if (clisock == -1) return false;
 
 		sendbuffer.currentsize = 0;
-		packetsize += 1;
-		sendbuffer.totalsize = packetsize + sizeof(int);
+		sendbuffer.totalsize = sizeof(int) + sizeof(char) + datasize;
 
-		memcpy(sendbuffer.buffer, (void*)&packetsize, sizeof(int));
+		memcpy(sendbuffer.buffer, (void*)&datasize, sizeof(int));
 		memcpy(sendbuffer.buffer+sizeof(int), &packet, sizeof(char));
-		memcpy(sendbuffer.buffer+sizeof(int)+sizeof(char), data, packetsize-1);
+		memcpy(sendbuffer.buffer+sizeof(int)+sizeof(char), data, datasize);
 
 		return true;
 	}
 
 	void parse(SocketBuffer *recvbuf)
 	{
-		char packet = (char&)*recvbuf->buffer;
+		char packet = (char&)*(recvbuf->buffer + sizeof(int));
+		int datapos = sizeof(char) + sizeof(int);
 
 		switch (packet)
 		{
 			case RESPONSE_OK :
 			{
-				juce::String log = "Response_ok : " + (juce::String)(recvbuf->buffer + sizeof(char));
+				juce::String log = "Response_ok : " + (juce::String)(recvbuf->buffer + datapos);
 				Log::getInstance()->log(log);
 			}
 			break;
 
 			case CLIENT_LOG_INFO:
 			{
-				juce::String log = "info : " + (juce::String)(recvbuf->buffer + sizeof(char));
+				juce::String log = "info : " + (juce::String)(recvbuf->buffer + datapos);
 				Log::getInstance()->clientlog(log);
 			}
 			break;
 			case CLIENT_LOG_WARN:
 			{
-				juce::String log = "warn : " + (juce::String)(recvbuf->buffer + sizeof(char));
+				juce::String log = "warn : " + (juce::String)(recvbuf->buffer + datapos);
 				Log::getInstance()->clientlog(log);
 			}
 			break;
 			case CLIENT_LOG_ERR:
 			{
-				juce::String log = "error : " + (juce::String)(recvbuf->buffer + sizeof(char));
+				juce::String log = "error : " + (juce::String)(recvbuf->buffer + datapos);
 				Log::getInstance()->clientlog(log);
 			}
 			break;
 
 			default :
 			{
-				juce::String log = "Response_fail : " + (juce::String)(recvbuf->buffer + sizeof(char));
-				Log::getInstance()->log(log);
+				juce::String log = "Response_fail : " + (juce::String)(recvbuf->buffer + datapos);
+				Log::getInstance()->clientlog(log);
 			}
 		}
 	}
@@ -221,6 +272,7 @@ private:
 
 	std::deque<SocketBuffer>	recvbufferlist;
 	SocketBuffer sendbuffer;
+	SocketBuffer recvbuffer;
 
 	
 	SOCKET serversock;

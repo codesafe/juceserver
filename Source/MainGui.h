@@ -23,7 +23,7 @@
 //[Headers]     -- You can add your own extra header files here --
 #include <deque>
 #define MAX_MESSAGE	14
-#define MAX_CLIENTMESSAGE	13
+#define MAX_CLIENTMESSAGE	120
 #include "../JuceLibraryCode/JuceHeader.h"
 //[/Headers]
 

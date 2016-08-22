@@ -236,7 +236,7 @@ void MainGui::buttonClicked (Button* buttonThatWasClicked)
 
 		std::string str = packetstr.toStdString();
 		if(str.size() > 0)
-			network.sendpacket(str.size(), PLAYMOTION, (char*)str.c_str());
+			network.sendpacket(PLAYMOTION, (char*)str.c_str(), str.size());
 
         //[/UserButtonCode_playButton]
     }
@@ -246,7 +246,7 @@ void MainGui::buttonClicked (Button* buttonThatWasClicked)
 
 		int ispeed = (int)speed;
 		addMessage(juce::String::formatted("Move forward : %d", ispeed));
-		network.sendpacket(sizeof(int), WHEEL_FORWARD, (char*)&ispeed);
+		network.sendpacket(WHEEL_FORWARD, (char*)&ispeed, sizeof(int));
 
         //[/UserButtonCode_upButton]
     }
@@ -255,7 +255,7 @@ void MainGui::buttonClicked (Button* buttonThatWasClicked)
         //[UserButtonCode_downButton] -- add your button handler code here..
 		int ispeed = (int)speed;
 		addMessage(juce::String::formatted("Move backward : %d", ispeed));
-		network.sendpacket(sizeof(int), WHEEL_BACKWARD, (char*)&ispeed);
+		network.sendpacket(WHEEL_BACKWARD, (char*)&ispeed, sizeof(int));
 
         //[/UserButtonCode_downButton]
     }
@@ -270,7 +270,7 @@ void MainGui::buttonClicked (Button* buttonThatWasClicked)
 		char data[8];
 		memcpy(data, &_lspeed, sizeof(int));
 		memcpy(data+sizeof(int), &_rspeed, sizeof(int));
-		network.sendpacket(sizeof(int)+sizeof(int), WHEEL_TURNRIGHT, data);
+		network.sendpacket(WHEEL_TURNRIGHT, data, sizeof(int) + sizeof(int));
 
         //[/UserButtonCode_rightButton]
     }
@@ -285,7 +285,7 @@ void MainGui::buttonClicked (Button* buttonThatWasClicked)
 		char data[8];
 		memcpy(data, &_lspeed, sizeof(int));
 		memcpy(data+sizeof(int), &_rspeed, sizeof(int));
-		network.sendpacket(sizeof(int)+sizeof(int), WHEEL_TURNLEFT, data);
+		network.sendpacket(WHEEL_TURNLEFT, data, sizeof(int) + sizeof(int));
 
         //[/UserButtonCode_leftButton]
     }
@@ -296,7 +296,7 @@ void MainGui::buttonClicked (Button* buttonThatWasClicked)
 
 		std::string str = packetstr.toStdString();
 		if(str.size() > 0)
-			network.sendpacket(str.size(), DISPLAY_PIC, (char*)str.c_str());
+			network.sendpacket(DISPLAY_PIC, (char*)str.c_str(), str.size());
 
 
         //[/UserButtonCode_displayButton]
@@ -306,7 +306,7 @@ void MainGui::buttonClicked (Button* buttonThatWasClicked)
         //[UserButtonCode_stopButton] -- add your button handler code here..
 		addMessage("Move Stopped");
 		int ispeed = 0;
-		network.sendpacket(sizeof(int), WHEEL_STOP, (char*)&ispeed);
+		network.sendpacket(WHEEL_STOP, (char*)&ispeed, sizeof(int));
         //[/UserButtonCode_stopButton]
     }
     else if (buttonThatWasClicked == patchButton)
@@ -394,7 +394,7 @@ void MainGui::addClientMessage(juce::String str)
 	juce::String msg;
 	for (size_t i = 0; i < clientmessagelist.size(); i++)
 	{
-		if (i > 0) msg += "\n";
+		//if (i > 0) msg += "\n";
 		msg += clientmessagelist[i];
 	}
 
@@ -417,7 +417,7 @@ void MainGui::timerCallback()
 	{
 		for (size_t i = 0; i < Log::getInstance()->clientloglist.size(); i++)
 		{
-			addMessage(Log::getInstance()->loglist[i]);
+			addClientMessage(Log::getInstance()->clientloglist[i]);
 		}
 
 		Log::getInstance()->clientloglist.clear();

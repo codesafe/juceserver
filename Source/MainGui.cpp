@@ -50,7 +50,7 @@ MainGui::MainGui ()
     //[/Constructor_pre]
 
     addAndMakeVisible (label = new Label ("new label",
-                                          TRANS("label text")));
+                                          String()));
     label->setFont (Font (15.00f, Font::plain));
     label->setJustificationType (Justification::topLeft);
     label->setEditable (false, false, false);
@@ -120,22 +120,53 @@ MainGui::MainGui ()
     patchButton->setColour (TextButton::buttonColourId, Colour (0xff650000));
     patchButton->setColour (TextButton::textColourOffId, Colours::white);
 
-    addAndMakeVisible (textEditor = new TextEditor ("new text editor"));
-    textEditor->setMultiLine (true);
-    textEditor->setReturnKeyStartsNewLine (true);
-    textEditor->setReadOnly (true);
-    textEditor->setScrollbarsShown (true);
-    textEditor->setCaretVisible (false);
-    textEditor->setPopupMenuEnabled (true);
-    textEditor->setColour (TextEditor::textColourId, Colours::white);
-    textEditor->setColour (TextEditor::backgroundColourId, Colour (0xff373737));
-    textEditor->setText (String());
+    addAndMakeVisible (label2 = new Label ("new label",
+                                           TRANS("Server log")));
+    label2->setFont (Font (15.00f, Font::plain));
+    label2->setJustificationType (Justification::centredLeft);
+    label2->setEditable (false, false, false);
+    label2->setColour (TextEditor::textColourId, Colours::black);
+    label2->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
+    addAndMakeVisible (label3 = new Label ("new label",
+                                           TRANS("Client log")));
+    label3->setFont (Font (15.00f, Font::plain));
+    label3->setJustificationType (Justification::centredLeft);
+    label3->setEditable (false, false, false);
+    label3->setColour (TextEditor::textColourId, Colours::black);
+    label3->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
+    addAndMakeVisible (label4 = new Label ("new label",
+                                           TRANS("L-Speed")));
+    label4->setFont (Font (15.00f, Font::plain));
+    label4->setJustificationType (Justification::centredLeft);
+    label4->setEditable (false, false, false);
+    label4->setColour (TextEditor::textColourId, Colours::black);
+    label4->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
+    addAndMakeVisible (label5 = new Label ("new label",
+                                           TRANS("R-Speed")));
+    label5->setFont (Font (15.00f, Font::plain));
+    label5->setJustificationType (Justification::centredLeft);
+    label5->setEditable (false, false, false);
+    label5->setColour (TextEditor::textColourId, Colours::black);
+    label5->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
+    addAndMakeVisible (clientlog = new Label ("clientlog",
+                                              String()));
+    clientlog->setFont (Font (15.00f, Font::plain));
+    clientlog->setJustificationType (Justification::topLeft);
+    clientlog->setEditable (false, false, false);
+    clientlog->setColour (Label::backgroundColourId, Colours::black);
+    clientlog->setColour (Label::textColourId, Colours::white);
+    clientlog->setColour (TextEditor::textColourId, Colours::black);
+    clientlog->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
 
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (800, 700);
+    setSize (1000, 700);
 
 
     //[Constructor] You can add your own custom stuff here..
@@ -170,7 +201,11 @@ MainGui::~MainGui()
     stopButton = nullptr;
     slider3 = nullptr;
     patchButton = nullptr;
-    textEditor = nullptr;
+    label2 = nullptr;
+    label3 = nullptr;
+    label4 = nullptr;
+    label5 = nullptr;
+    clientlog = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -185,18 +220,6 @@ void MainGui::paint (Graphics& g)
 
     g.fillAll (Colours::white);
 
-    g.setColour (Colours::black);
-    g.setFont (Font (15.00f, Font::plain));
-    g.drawText (TRANS("R-Speed"),
-                702, 463, 75, 30,
-                Justification::centred, true);
-
-    g.setColour (Colours::black);
-    g.setFont (Font (15.00f, Font::plain));
-    g.drawText (TRANS("L-Speed"),
-                430, 463, 75, 30,
-                Justification::centred, true);
-
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
 }
@@ -206,20 +229,24 @@ void MainGui::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    label->setBounds (8, 16, 784, 224);
-    playButton->setBounds (16, 552, 150, 32);
-    upButton->setBounds (576, 528, 64, 32);
-    downButton->setBounds (576, 640, 64, 29);
-    rightButton->setBounds (656, 584, 64, 32);
-    motionLabel->setBounds (16, 504, 152, 32);
-    slider->setBounds (728, 504, 40, 176);
-    leftButton->setBounds (496, 584, 64, 32);
-    displayButton->setBounds (16, 600, 150, 32);
-    slider2->setBounds (440, 504, 48, 176);
-    stopButton->setBounds (576, 584, 64, 29);
-    slider3->setBounds (536, 488, 150, 24);
-    patchButton->setBounds (16, 648, 150, 32);
-    textEditor->setBounds (8, 256, 784, 192);
+    label->setBounds (8, 32, 408, 400);
+    playButton->setBounds (48, 544, 150, 32);
+    upButton->setBounds (664, 528, 64, 32);
+    downButton->setBounds (664, 640, 64, 29);
+    rightButton->setBounds (744, 584, 64, 32);
+    motionLabel->setBounds (48, 496, 152, 32);
+    slider->setBounds (816, 504, 40, 176);
+    leftButton->setBounds (584, 584, 64, 32);
+    displayButton->setBounds (48, 592, 150, 32);
+    slider2->setBounds (528, 504, 48, 176);
+    stopButton->setBounds (664, 584, 64, 29);
+    slider3->setBounds (624, 488, 150, 24);
+    patchButton->setBounds (48, 640, 150, 32);
+    label2->setBounds (8, 5, 150, 24);
+    label3->setBounds (432, 8, 150, 24);
+    label4->setBounds (520, 456, 150, 24);
+    label5->setBounds (808, 456, 150, 24);
+    clientlog->setBounds (432, 32, 552, 400);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -398,7 +425,7 @@ void MainGui::addClientMessage(juce::String str)
 		msg += clientmessagelist[i];
 	}
 
-	textEditor->setText(msg, juce::NotificationType::dontSendNotification);
+	clientlog->setText(msg, juce::NotificationType::dontSendNotification);
 }
 
 void MainGui::timerCallback()
@@ -440,67 +467,83 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="MainGui" componentName=""
                  parentClasses="public Component, public Timer" constructorParams=""
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="1" initialWidth="800" initialHeight="700">
-  <BACKGROUND backgroundColour="ffffffff">
-    <TEXT pos="702 463 75 30" fill="solid: ff000000" hasStroke="0" text="R-Speed"
-          fontname="Default font" fontsize="15" bold="0" italic="0" justification="36"/>
-    <TEXT pos="430 463 75 30" fill="solid: ff000000" hasStroke="0" text="L-Speed"
-          fontname="Default font" fontsize="15" bold="0" italic="0" justification="36"/>
-  </BACKGROUND>
+                 overlayOpacity="0.330" fixedSize="1" initialWidth="1000" initialHeight="700">
+  <BACKGROUND backgroundColour="ffffffff"/>
   <LABEL name="new label" id="a468f7d6183fa770" memberName="label" virtualName=""
-         explicitFocusOrder="0" pos="8 16 784 224" bkgCol="ff000000" textCol="ffffffff"
-         edTextCol="ff000000" edBkgCol="0" labelText="label text" editableSingleClick="0"
+         explicitFocusOrder="0" pos="8 32 408 400" bkgCol="ff000000" textCol="ffffffff"
+         edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15" bold="0" italic="0" justification="9"/>
   <TEXTBUTTON name="PlayMotion" id="45a4cb1f3a68127f" memberName="playButton"
-              virtualName="" explicitFocusOrder="0" pos="16 552 150 32" buttonText="Play"
+              virtualName="" explicitFocusOrder="0" pos="48 544 150 32" buttonText="Play"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="Up" id="aebc4158a6eb6b7f" memberName="upButton" virtualName=""
-              explicitFocusOrder="0" pos="576 528 64 32" buttonText="Forward"
+              explicitFocusOrder="0" pos="664 528 64 32" buttonText="Forward"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="Down" id="4acf33de38e1f39c" memberName="downButton" virtualName=""
-              explicitFocusOrder="0" pos="576 640 64 29" buttonText="Backward"
+              explicitFocusOrder="0" pos="664 640 64 29" buttonText="Backward"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="Right" id="e21e3e353ac7518c" memberName="rightButton" virtualName=""
-              explicitFocusOrder="0" pos="656 584 64 32" buttonText="Right"
+              explicitFocusOrder="0" pos="744 584 64 32" buttonText="Right"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <LABEL name="motionLabel" id="996f53ca37638546" memberName="motionLabel"
-         virtualName="" explicitFocusOrder="0" pos="16 504 152 32" bkgCol="ffffffff"
+         virtualName="" explicitFocusOrder="0" pos="48 496 152 32" bkgCol="ffffffff"
          textCol="ff000000" outlineCol="ff000000" edTextCol="ff000000"
          edBkgCol="0" labelText="" editableSingleClick="1" editableDoubleClick="1"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15"
          bold="0" italic="0" justification="33"/>
   <SLIDER name="new slider" id="205c96fe532e179a" memberName="slider" virtualName=""
-          explicitFocusOrder="0" pos="728 504 40 176" min="0" max="1023"
+          explicitFocusOrder="0" pos="816 504 40 176" min="0" max="1023"
           int="1" style="LinearVertical" textBoxPos="TextBoxAbove" textBoxEditable="1"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1" needsCallback="1"/>
   <TEXTBUTTON name="Left" id="b1bebbabb70704e8" memberName="leftButton" virtualName=""
-              explicitFocusOrder="0" pos="496 584 64 32" buttonText="Left"
+              explicitFocusOrder="0" pos="584 584 64 32" buttonText="Left"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="displayButton" id="dcc6371a83dc37f0" memberName="displayButton"
-              virtualName="" explicitFocusOrder="0" pos="16 600 150 32" buttonText="display"
+              virtualName="" explicitFocusOrder="0" pos="48 592 150 32" buttonText="display"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <SLIDER name="new slider" id="f9cf708c27ef3f2a" memberName="slider2"
-          virtualName="" explicitFocusOrder="0" pos="440 504 48 176" min="0"
+          virtualName="" explicitFocusOrder="0" pos="528 504 48 176" min="0"
           max="1023" int="1" style="LinearVertical" textBoxPos="TextBoxAbove"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
           needsCallback="1"/>
   <TEXTBUTTON name="Stop" id="3b9eb620d887ad06" memberName="stopButton" virtualName=""
-              explicitFocusOrder="0" pos="576 584 64 29" buttonText="Stop"
+              explicitFocusOrder="0" pos="664 584 64 29" buttonText="Stop"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <SLIDER name="new slider" id="a24977e8b1e23e79" memberName="slider3"
-          virtualName="" explicitFocusOrder="0" pos="536 488 150 24" min="1"
+          virtualName="" explicitFocusOrder="0" pos="624 488 150 24" min="1"
           max="1024" int="1" style="LinearHorizontal" textBoxPos="TextBoxLeft"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
           needsCallback="1"/>
   <TEXTBUTTON name="patchButton" id="477807e8719116cc" memberName="patchButton"
-              virtualName="" explicitFocusOrder="0" pos="16 648 150 32" bgColOff="ff650000"
+              virtualName="" explicitFocusOrder="0" pos="48 640 150 32" bgColOff="ff650000"
               textCol="ffffffff" buttonText="patch" connectedEdges="0" needsCallback="1"
               radioGroupId="0"/>
-  <TEXTEDITOR name="new text editor" id="f3206155cf103681" memberName="textEditor"
-              virtualName="" explicitFocusOrder="0" pos="8 256 784 192" textcol="ffffffff"
-              bkgcol="ff373737" initialText="" multiline="1" retKeyStartsLine="1"
-              readonly="1" scrollbars="1" caret="0" popupmenu="1"/>
+  <LABEL name="new label" id="3c57c14b243b3d89" memberName="label2" virtualName=""
+         explicitFocusOrder="0" pos="8 5 150 24" edTextCol="ff000000"
+         edBkgCol="0" labelText="Server log" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
+         bold="0" italic="0" justification="33"/>
+  <LABEL name="new label" id="372ca961f8280819" memberName="label3" virtualName=""
+         explicitFocusOrder="0" pos="432 8 150 24" edTextCol="ff000000"
+         edBkgCol="0" labelText="Client log" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
+         bold="0" italic="0" justification="33"/>
+  <LABEL name="new label" id="8572e96c683f304c" memberName="label4" virtualName=""
+         explicitFocusOrder="0" pos="520 456 150 24" edTextCol="ff000000"
+         edBkgCol="0" labelText="L-Speed" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
+         bold="0" italic="0" justification="33"/>
+  <LABEL name="new label" id="a043201367a4d58f" memberName="label5" virtualName=""
+         explicitFocusOrder="0" pos="808 456 150 24" edTextCol="ff000000"
+         edBkgCol="0" labelText="R-Speed" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
+         bold="0" italic="0" justification="33"/>
+  <LABEL name="clientlog" id="8a981e270187e18b" memberName="clientlog"
+         virtualName="" explicitFocusOrder="0" pos="432 32 552 400" bkgCol="ff000000"
+         textCol="ffffffff" edTextCol="ff000000" edBkgCol="0" labelText=""
+         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
+         fontname="Default font" fontsize="15" bold="0" italic="0" justification="9"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

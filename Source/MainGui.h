@@ -22,8 +22,8 @@
 
 //[Headers]     -- You can add your own extra header files here --
 #include <deque>
-#define MAX_MESSAGE	14
-#define MAX_CLIENTMESSAGE	120
+#define MAX_MESSAGE	25
+#define MAX_CLIENTMESSAGE	25
 #include "../JuceLibraryCode/JuceHeader.h"
 //[/Headers]
 
@@ -88,7 +88,11 @@ private:
     ScopedPointer<TextButton> stopButton;
     ScopedPointer<Slider> slider3;
     ScopedPointer<TextButton> patchButton;
-    ScopedPointer<TextEditor> textEditor;
+    ScopedPointer<Label> label2;
+    ScopedPointer<Label> label3;
+    ScopedPointer<Label> label4;
+    ScopedPointer<Label> label5;
+    ScopedPointer<Label> clientlog;
 
 
     //==============================================================================

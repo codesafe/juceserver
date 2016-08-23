@@ -242,19 +242,19 @@ public:
 
 			case CLIENT_LOG_INFO:
 			{
-				juce::String log = "info : " + (juce::String)(recvbuf->buffer + datapos);
+				juce::String log = "[i] " + (juce::String)(recvbuf->buffer + datapos);
 				Log::getInstance()->clientlog(log);
 			}
 			break;
 			case CLIENT_LOG_WARN:
 			{
-				juce::String log = "warn : " + (juce::String)(recvbuf->buffer + datapos);
+				juce::String log = "[w] " + (juce::String)(recvbuf->buffer + datapos);
 				Log::getInstance()->clientlog(log);
 			}
 			break;
 			case CLIENT_LOG_ERR:
 			{
-				juce::String log = "error : " + (juce::String)(recvbuf->buffer + datapos);
+				juce::String log = "[e] " + (juce::String)(recvbuf->buffer + datapos);
 				Log::getInstance()->clientlog(log);
 			}
 			break;

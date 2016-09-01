@@ -3,3 +3,7 @@
 ################################################################################
 
 /Builds/VisualStudio2012
+/Builds/VisualStudio2015/Debug/juceserver.tlog
+/Builds/VisualStudio2015/Debug
+/Builds/VisualStudio2015/juceserver.VC.VC.opendb
+/Builds/VisualStudio2015/juceserver.VC.db

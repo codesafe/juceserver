@@ -67,6 +67,7 @@ private:
 	double lspeed;
 	double speed;
 	juce::String packetstr;
+	juce::String displaystr;
 	std::deque<juce::String> messagelist;
 	void addMessage(juce::String str);
 
@@ -93,6 +94,8 @@ private:
     ScopedPointer<Label> label4;
     ScopedPointer<Label> label5;
     ScopedPointer<Label> clientlog;
+    ScopedPointer<Label> displayLabel;
+    ScopedPointer<TextButton> resetButton;
 
 
     //==============================================================================

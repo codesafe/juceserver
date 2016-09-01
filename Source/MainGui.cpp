@@ -162,6 +162,24 @@ MainGui::MainGui ()
     clientlog->setColour (TextEditor::textColourId, Colours::black);
     clientlog->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
+    addAndMakeVisible (displayLabel = new Label ("displayLabel",
+                                                 String()));
+    displayLabel->setFont (Font (15.00f, Font::plain));
+    displayLabel->setJustificationType (Justification::centredLeft);
+    displayLabel->setEditable (true, true, false);
+    displayLabel->setColour (Label::backgroundColourId, Colours::white);
+    displayLabel->setColour (Label::textColourId, Colours::black);
+    displayLabel->setColour (Label::outlineColourId, Colours::black);
+    displayLabel->setColour (TextEditor::textColourId, Colours::black);
+    displayLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+    displayLabel->addListener (this);
+
+    addAndMakeVisible (resetButton = new TextButton ("resetButton"));
+    resetButton->setButtonText (TRANS("reset"));
+    resetButton->addListener (this);
+    resetButton->setColour (TextButton::buttonColourId, Colour (0xff650000));
+    resetButton->setColour (TextButton::textColourOffId, Colours::white);
+
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -206,6 +224,8 @@ MainGui::~MainGui()
     label4 = nullptr;
     label5 = nullptr;
     clientlog = nullptr;
+    displayLabel = nullptr;
+    resetButton = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -230,23 +250,25 @@ void MainGui::resized()
     //[/UserPreResize]
 
     label->setBounds (8, 32, 408, 400);
-    playButton->setBounds (48, 544, 150, 32);
+    playButton->setBounds (24, 528, 150, 32);
     upButton->setBounds (664, 528, 64, 32);
     downButton->setBounds (664, 640, 64, 29);
     rightButton->setBounds (744, 584, 64, 32);
-    motionLabel->setBounds (48, 496, 152, 32);
+    motionLabel->setBounds (24, 480, 152, 32);
     slider->setBounds (816, 504, 40, 176);
     leftButton->setBounds (584, 584, 64, 32);
-    displayButton->setBounds (48, 592, 150, 32);
+    displayButton->setBounds (216, 528, 150, 32);
     slider2->setBounds (528, 504, 48, 176);
     stopButton->setBounds (664, 584, 64, 29);
     slider3->setBounds (624, 488, 150, 24);
-    patchButton->setBounds (48, 640, 150, 32);
+    patchButton->setBounds (24, 640, 150, 32);
     label2->setBounds (8, 5, 150, 24);
     label3->setBounds (432, 8, 150, 24);
     label4->setBounds (520, 456, 150, 24);
     label5->setBounds (808, 456, 150, 24);
     clientlog->setBounds (432, 32, 552, 400);
+    displayLabel->setBounds (216, 480, 152, 32);
+    resetButton->setBounds (216, 640, 150, 32);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -321,7 +343,7 @@ void MainGui::buttonClicked (Button* buttonThatWasClicked)
         //[UserButtonCode_displayButton] -- add your button handler code here..
 		addMessage("Pushed display");
 
-		std::string str = packetstr.toStdString();
+		std::string str = displaystr.toStdString();
 		if(str.size() > 0)
 			network.sendpacket(DISPLAY_PIC, (char*)str.c_str(), str.size());
 
@@ -339,8 +361,20 @@ void MainGui::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == patchButton)
     {
         //[UserButtonCode_patchButton] -- add your button handler code here..
-		addClientMessage("asdASD");
+		addClientMessage("Push Patch Button");
+		int i = 0;
+		network.sendpacket(FORCEPATCH, (char*)&i, sizeof(int));
+
         //[/UserButtonCode_patchButton]
+    }
+    else if (buttonThatWasClicked == resetButton)
+    {
+        //[UserButtonCode_resetButton] -- add your button handler code here..
+		addClientMessage("Push Reset Button");
+		int i = 0;
+		network.sendpacket(DEVICERESET, (char*)&i, sizeof(int));
+
+        //[/UserButtonCode_resetButton]
     }
 
     //[UserbuttonClicked_Post]
@@ -358,6 +392,13 @@ void MainGui::labelTextChanged (Label* labelThatHasChanged)
 		packetstr = motionLabel->getText();
 		addMessage(packetstr);
         //[/UserLabelCode_motionLabel]
+    }
+    else if (labelThatHasChanged == displayLabel)
+    {
+        //[UserLabelCode_displayLabel] -- add your label text handling code here..
+		displaystr = displayLabel->getText();
+		addMessage(displaystr);
+        //[/UserLabelCode_displayLabel]
     }
 
     //[UserlabelTextChanged_Post]
@@ -475,7 +516,7 @@ BEGIN_JUCER_METADATA
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="15" bold="0" italic="0" justification="9"/>
   <TEXTBUTTON name="PlayMotion" id="45a4cb1f3a68127f" memberName="playButton"
-              virtualName="" explicitFocusOrder="0" pos="48 544 150 32" buttonText="Play"
+              virtualName="" explicitFocusOrder="0" pos="24 528 150 32" buttonText="Play"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="Up" id="aebc4158a6eb6b7f" memberName="upButton" virtualName=""
               explicitFocusOrder="0" pos="664 528 64 32" buttonText="Forward"
@@ -487,7 +528,7 @@ BEGIN_JUCER_METADATA
               explicitFocusOrder="0" pos="744 584 64 32" buttonText="Right"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <LABEL name="motionLabel" id="996f53ca37638546" memberName="motionLabel"
-         virtualName="" explicitFocusOrder="0" pos="48 496 152 32" bkgCol="ffffffff"
+         virtualName="" explicitFocusOrder="0" pos="24 480 152 32" bkgCol="ffffffff"
          textCol="ff000000" outlineCol="ff000000" edTextCol="ff000000"
          edBkgCol="0" labelText="" editableSingleClick="1" editableDoubleClick="1"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15"
@@ -500,7 +541,7 @@ BEGIN_JUCER_METADATA
               explicitFocusOrder="0" pos="584 584 64 32" buttonText="Left"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="displayButton" id="dcc6371a83dc37f0" memberName="displayButton"
-              virtualName="" explicitFocusOrder="0" pos="48 592 150 32" buttonText="display"
+              virtualName="" explicitFocusOrder="0" pos="216 528 150 32" buttonText="display"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <SLIDER name="new slider" id="f9cf708c27ef3f2a" memberName="slider2"
           virtualName="" explicitFocusOrder="0" pos="528 504 48 176" min="0"
@@ -516,7 +557,7 @@ BEGIN_JUCER_METADATA
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
           needsCallback="1"/>
   <TEXTBUTTON name="patchButton" id="477807e8719116cc" memberName="patchButton"
-              virtualName="" explicitFocusOrder="0" pos="48 640 150 32" bgColOff="ff650000"
+              virtualName="" explicitFocusOrder="0" pos="24 640 150 32" bgColOff="ff650000"
               textCol="ffffffff" buttonText="patch" connectedEdges="0" needsCallback="1"
               radioGroupId="0"/>
   <LABEL name="new label" id="3c57c14b243b3d89" memberName="label2" virtualName=""
@@ -544,6 +585,16 @@ BEGIN_JUCER_METADATA
          textCol="ffffffff" edTextCol="ff000000" edBkgCol="0" labelText=""
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default font" fontsize="15" bold="0" italic="0" justification="9"/>
+  <LABEL name="displayLabel" id="2b194dd76a730a3b" memberName="displayLabel"
+         virtualName="" explicitFocusOrder="0" pos="216 480 152 32" bkgCol="ffffffff"
+         textCol="ff000000" outlineCol="ff000000" edTextCol="ff000000"
+         edBkgCol="0" labelText="" editableSingleClick="1" editableDoubleClick="1"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
+         bold="0" italic="0" justification="33"/>
+  <TEXTBUTTON name="resetButton" id="85416a54cab5154b" memberName="resetButton"
+              virtualName="" explicitFocusOrder="0" pos="216 640 150 32" bgColOff="ff650000"
+              textCol="ffffffff" buttonText="reset" connectedEdges="0" needsCallback="1"
+              radioGroupId="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

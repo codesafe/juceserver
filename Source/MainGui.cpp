@@ -361,7 +361,7 @@ void MainGui::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == patchButton)
     {
         //[UserButtonCode_patchButton] -- add your button handler code here..
-		addClientMessage("Push Patch Button");
+		addMessage("Push Patch Button");
 		int i = 0;
 		network.sendpacket(FORCEPATCH, (char*)&i, sizeof(int));
 
@@ -370,7 +370,7 @@ void MainGui::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == resetButton)
     {
         //[UserButtonCode_resetButton] -- add your button handler code here..
-		addClientMessage("Push Reset Button");
+		addMessage("Push Reset Button");
 		int i = 0;
 		network.sendpacket(DEVICERESET, (char*)&i, sizeof(int));
 

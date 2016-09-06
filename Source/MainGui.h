@@ -88,7 +88,6 @@ private:
     ScopedPointer<Slider> slider2;
     ScopedPointer<TextButton> stopButton;
     ScopedPointer<Slider> slider3;
-    ScopedPointer<TextButton> patchButton;
     ScopedPointer<Label> label2;
     ScopedPointer<Label> label3;
     ScopedPointer<Label> label4;

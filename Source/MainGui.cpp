@@ -114,12 +114,6 @@ MainGui::MainGui ()
     slider3->setTextBoxStyle (Slider::TextBoxLeft, false, 80, 20);
     slider3->addListener (this);
 
-    addAndMakeVisible (patchButton = new TextButton ("patchButton"));
-    patchButton->setButtonText (TRANS("patch"));
-    patchButton->addListener (this);
-    patchButton->setColour (TextButton::buttonColourId, Colour (0xff650000));
-    patchButton->setColour (TextButton::textColourOffId, Colours::white);
-
     addAndMakeVisible (label2 = new Label ("new label",
                                            TRANS("Server log")));
     label2->setFont (Font (15.00f, Font::plain));
@@ -175,7 +169,7 @@ MainGui::MainGui ()
     displayLabel->addListener (this);
 
     addAndMakeVisible (resetButton = new TextButton ("resetButton"));
-    resetButton->setButtonText (TRANS("reset"));
+    resetButton->setButtonText (TRANS("Quit Client"));
     resetButton->addListener (this);
     resetButton->setColour (TextButton::buttonColourId, Colour (0xff650000));
     resetButton->setColour (TextButton::textColourOffId, Colours::white);
@@ -218,7 +212,6 @@ MainGui::~MainGui()
     slider2 = nullptr;
     stopButton = nullptr;
     slider3 = nullptr;
-    patchButton = nullptr;
     label2 = nullptr;
     label3 = nullptr;
     label4 = nullptr;
@@ -261,7 +254,6 @@ void MainGui::resized()
     slider2->setBounds (528, 504, 48, 176);
     stopButton->setBounds (664, 584, 64, 29);
     slider3->setBounds (624, 488, 150, 24);
-    patchButton->setBounds (24, 640, 150, 32);
     label2->setBounds (8, 5, 150, 24);
     label3->setBounds (432, 8, 150, 24);
     label4->setBounds (520, 456, 150, 24);
@@ -358,21 +350,22 @@ void MainGui::buttonClicked (Button* buttonThatWasClicked)
 		network.sendpacket(WHEEL_STOP, (char*)&ispeed, sizeof(int));
         //[/UserButtonCode_stopButton]
     }
-    else if (buttonThatWasClicked == patchButton)
-    {
-        //[UserButtonCode_patchButton] -- add your button handler code here..
-		addMessage("Push Patch Button");
-		int i = 0;
-		network.sendpacket(FORCEPATCH, (char*)&i, sizeof(int));
-
-        //[/UserButtonCode_patchButton]
-    }
     else if (buttonThatWasClicked == resetButton)
     {
         //[UserButtonCode_resetButton] -- add your button handler code here..
-		addMessage("Push Reset Button");
-		int i = 0;
-		network.sendpacket(DEVICERESET, (char*)&i, sizeof(int));
+		addMessage("Push Exit Button");
+
+		const int r = AlertWindow::showOkCancelBox(AlertWindow::WarningIcon,
+			TRANS("Exit Client"),
+			TRANS("Are you sure ?"),
+			TRANS("Exit"),
+			TRANS("Cancel"));
+
+		if (r == 1)
+		{
+			int i = 0;
+			network.sendpacket(DEVICERESET, (char*)&i, sizeof(int));
+		}
 
         //[/UserButtonCode_resetButton]
     }
@@ -556,10 +549,6 @@ BEGIN_JUCER_METADATA
           max="1024" int="1" style="LinearHorizontal" textBoxPos="TextBoxLeft"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
           needsCallback="1"/>
-  <TEXTBUTTON name="patchButton" id="477807e8719116cc" memberName="patchButton"
-              virtualName="" explicitFocusOrder="0" pos="24 640 150 32" bgColOff="ff650000"
-              textCol="ffffffff" buttonText="patch" connectedEdges="0" needsCallback="1"
-              radioGroupId="0"/>
   <LABEL name="new label" id="3c57c14b243b3d89" memberName="label2" virtualName=""
          explicitFocusOrder="0" pos="8 5 150 24" edTextCol="ff000000"
          edBkgCol="0" labelText="Server log" editableSingleClick="0" editableDoubleClick="0"
@@ -593,8 +582,8 @@ BEGIN_JUCER_METADATA
          bold="0" italic="0" justification="33"/>
   <TEXTBUTTON name="resetButton" id="85416a54cab5154b" memberName="resetButton"
               virtualName="" explicitFocusOrder="0" pos="216 640 150 32" bgColOff="ff650000"
-              textCol="ffffffff" buttonText="reset" connectedEdges="0" needsCallback="1"
-              radioGroupId="0"/>
+              textCol="ffffffff" buttonText="Quit Client" connectedEdges="0"
+              needsCallback="1" radioGroupId="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

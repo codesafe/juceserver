@@ -109,7 +109,7 @@ MainGui::MainGui ()
     stopButton->addListener (this);
 
     addAndMakeVisible (slider3 = new Slider ("new slider"));
-    slider3->setRange (1, 1024, 1);
+    slider3->setRange (0, 1023, 1);
     slider3->setSliderStyle (Slider::LinearHorizontal);
     slider3->setTextBoxStyle (Slider::TextBoxLeft, false, 80, 20);
     slider3->addListener (this);
@@ -131,7 +131,7 @@ MainGui::MainGui ()
     label3->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (label4 = new Label ("new label",
-                                           TRANS("L-Speed")));
+                                           TRANS("Left-Speed")));
     label4->setFont (Font (15.00f, Font::plain));
     label4->setJustificationType (Justification::centredLeft);
     label4->setEditable (false, false, false);
@@ -139,7 +139,7 @@ MainGui::MainGui ()
     label4->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (label5 = new Label ("new label",
-                                           TRANS("R-Speed")));
+                                           TRANS("Right-Speed")));
     label5->setFont (Font (15.00f, Font::plain));
     label5->setJustificationType (Justification::centredLeft);
     label5->setEditable (false, false, false);
@@ -173,6 +173,24 @@ MainGui::MainGui ()
     resetButton->addListener (this);
     resetButton->setColour (TextButton::buttonColourId, Colour (0xff650000));
     resetButton->setColour (TextButton::textColourOffId, Colours::white);
+
+    addAndMakeVisible (label6 = new Label ("new label",
+                                           TRANS("Animation")));
+    label6->setFont (Font (15.00f, Font::plain));
+    label6->setJustificationType (Justification::centred);
+    label6->setEditable (false, false, false);
+    label6->setColour (Label::backgroundColourId, Colour (0xff78cfff));
+    label6->setColour (TextEditor::textColourId, Colours::black);
+    label6->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
+    addAndMakeVisible (label7 = new Label ("new label",
+                                           TRANS("Display")));
+    label7->setFont (Font (15.00f, Font::plain));
+    label7->setJustificationType (Justification::centred);
+    label7->setEditable (false, false, false);
+    label7->setColour (Label::backgroundColourId, Colour (0xff78cfff));
+    label7->setColour (TextEditor::textColourId, Colours::black);
+    label7->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
 
     //[UserPreSize]
@@ -219,6 +237,8 @@ MainGui::~MainGui()
     clientlog = nullptr;
     displayLabel = nullptr;
     resetButton = nullptr;
+    label6 = nullptr;
+    label7 = nullptr;
 
 
     //[Destructor]. You can add your own custom destruction code here..
@@ -261,6 +281,8 @@ void MainGui::resized()
     clientlog->setBounds (432, 32, 552, 400);
     displayLabel->setBounds (216, 480, 152, 32);
     resetButton->setBounds (216, 640, 150, 32);
+    label6->setBounds (24, 448, 150, 24);
+    label7->setBounds (216, 448, 150, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -545,8 +567,8 @@ BEGIN_JUCER_METADATA
               explicitFocusOrder="0" pos="664 584 64 29" buttonText="Stop"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <SLIDER name="new slider" id="a24977e8b1e23e79" memberName="slider3"
-          virtualName="" explicitFocusOrder="0" pos="624 488 150 24" min="1"
-          max="1024" int="1" style="LinearHorizontal" textBoxPos="TextBoxLeft"
+          virtualName="" explicitFocusOrder="0" pos="624 488 150 24" min="0"
+          max="1023" int="1" style="LinearHorizontal" textBoxPos="TextBoxLeft"
           textBoxEditable="1" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
           needsCallback="1"/>
   <LABEL name="new label" id="3c57c14b243b3d89" memberName="label2" virtualName=""
@@ -561,14 +583,14 @@ BEGIN_JUCER_METADATA
          bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="8572e96c683f304c" memberName="label4" virtualName=""
          explicitFocusOrder="0" pos="520 456 150 24" edTextCol="ff000000"
-         edBkgCol="0" labelText="L-Speed" editableSingleClick="0" editableDoubleClick="0"
+         edBkgCol="0" labelText="Left-Speed" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="15"
          bold="0" italic="0" justification="33"/>
   <LABEL name="new label" id="a043201367a4d58f" memberName="label5" virtualName=""
          explicitFocusOrder="0" pos="808 456 150 24" edTextCol="ff000000"
-         edBkgCol="0" labelText="R-Speed" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
-         bold="0" italic="0" justification="33"/>
+         edBkgCol="0" labelText="Right-Speed" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="15" bold="0" italic="0" justification="33"/>
   <LABEL name="clientlog" id="8a981e270187e18b" memberName="clientlog"
          virtualName="" explicitFocusOrder="0" pos="432 32 552 400" bkgCol="ff000000"
          textCol="ffffffff" edTextCol="ff000000" edBkgCol="0" labelText=""
@@ -584,6 +606,16 @@ BEGIN_JUCER_METADATA
               virtualName="" explicitFocusOrder="0" pos="216 640 150 32" bgColOff="ff650000"
               textCol="ffffffff" buttonText="Quit Client" connectedEdges="0"
               needsCallback="1" radioGroupId="0"/>
+  <LABEL name="new label" id="f9371f78d1343237" memberName="label6" virtualName=""
+         explicitFocusOrder="0" pos="24 448 150 24" bkgCol="ff78cfff"
+         edTextCol="ff000000" edBkgCol="0" labelText="Animation" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="15" bold="0" italic="0" justification="36"/>
+  <LABEL name="new label" id="bfba425254ee532a" memberName="label7" virtualName=""
+         explicitFocusOrder="0" pos="216 448 150 24" bkgCol="ff78cfff"
+         edTextCol="ff000000" edBkgCol="0" labelText="Display" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="15" bold="0" italic="0" justification="36"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

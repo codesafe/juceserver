@@ -95,6 +95,8 @@ private:
     ScopedPointer<Label> clientlog;
     ScopedPointer<Label> displayLabel;
     ScopedPointer<TextButton> resetButton;
+    ScopedPointer<Label> label6;
+    ScopedPointer<Label> label7;
 
 
     //==============================================================================
